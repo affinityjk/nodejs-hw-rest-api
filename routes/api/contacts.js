@@ -1,34 +1,93 @@
 const express = require("express");
 const router = express.Router();
+const listContacts = require("../../model/contacts/listContacts");
+const getContactById = require("../../model/contacts/getContactById");
+const addContact = require("../../model/contacts/addContact");
+const removeContact = require("../../model/contacts/removeContact");
+const updateContact = require("../../model/contacts/updateContact");
 
 router.get("/", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
-  } catch (error) {}
+    const results = await listContacts();
+    res.json({
+      status: "success",
+      code: 200,
+      data: { results },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:contactId", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
-  } catch (error) {}
+    const { contactId } = req.params;
+    const result = await getContactById(contactId);
+    if (!result) {
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      data: { result },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
-  } catch (error) {}
+    const result = await addContact(req.body);
+    res.json({
+      status: "success",
+      code: 201,
+      data: { result },
+      message: "Contact added",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
-  } catch (error) {}
+    const { contactId } = req.params;
+    const result = await removeContact(contactId);
+    if (!result) {
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      message: `Contact with id ${contactId} deleted`,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.patch("/:contactId", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
-  } catch (error) {}
+    const { contactId } = req.params;
+    const result = await updateContact(contactId, req.body);
+    if (!result) {
+      const error = new Error(`Contact with id ${contactId} not found`);
+      error.status = 404;
+      throw error;
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      data: { result },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
