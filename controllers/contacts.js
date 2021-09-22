@@ -1,62 +1,42 @@
 const { NotFound } = require("http-errors");
+const sendSuccessRes = require("../utils/sendSuccessRes");
 const contactsOperation = require("../model/contacts/index");
 
 const listContacts = async (req, res) => {
   const results = await contactsOperation.listContacts();
-  res.json({
-    status: "success",
-    code: 200,
-    data: { results },
-  });
+  sendSuccessRes(res, { results });
 };
 
 const getContactById = async (req, res) => {
   const { contactId } = req.params;
   const result = await contactsOperation.getContactById(contactId);
   if (!result) {
-    throw new NotFound(`Contact with id=${contactId} not found`);
+    throw new NotFound(`Contact with id ${contactId} not found`);
   }
-  res.json({
-    status: "success",
-    code: 200,
-    data: { result },
-  });
+  sendSuccessRes(res, { result });
 };
 
 const removeContact = async (req, res) => {
   const { contactId } = req.params;
   const result = await contactsOperation.removeContact(contactId);
   if (!result) {
-    throw new NotFound(`Contact with id=${contactId} not found`);
+    throw new NotFound(`Contact with id ${contactId} not found`);
   }
-  res.json({
-    status: "success",
-    code: 200,
-    message: `Contact with id ${contactId} deleted`,
-  });
+  sendSuccessRes(res, { message: `Contact with id ${contactId} deleted` });
 };
 
 const addContact = async (req, res) => {
   const result = await contactsOperation.addContact(req.body);
-  res.json({
-    status: "success",
-    code: 201,
-    data: { result },
-    message: "Contact added",
-  });
+  sendSuccessRes(res, { result, message: "Contact added" }, 201);
 };
 
 const updateContact = async (req, res) => {
   const { contactId } = req.params;
   const result = await contactsOperation.updateContact(contactId, req.body);
   if (!result) {
-    throw new NotFound(`Contact with id=${contactId} not found`);
+    throw new NotFound(`Contact with id ${contactId} not found`);
   }
-  res.json({
-    status: "success",
-    code: 200,
-    data: { result },
-  });
+  sendSuccessRes(res, { result, message: "Contact updated" });
 };
 
 module.exports = {
