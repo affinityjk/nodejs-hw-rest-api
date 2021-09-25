@@ -1,10 +1,17 @@
 const { Contact } = require("../models");
 
-const { sendSuccessRes } = require("../utils");
+const listContacts = async (req, res, next) => {
+  try {
+    const results = await Contact.find({});
 
-const listContacts = async (req, res) => {
-  const result = await Contact.find({}, "_contactId name email phone favorite");
-  sendSuccessRes(res, { result });
+    res.json({
+      status: "success",
+      code: 200,
+      data: { results },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = listContacts;
