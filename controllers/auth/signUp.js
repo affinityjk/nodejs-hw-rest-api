@@ -11,7 +11,7 @@ const signUp = async (req, res) => {
     throw new Conflict(`Email ${email} in use`);
   }
 
-  const newUser = new User({ email, avatarUrl: defaultImage });
+  const newUser = new User({ email, avatarURL: defaultImage });
   newUser.setPassword(password);
   await newUser.save();
 

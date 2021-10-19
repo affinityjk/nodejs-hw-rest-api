@@ -11,18 +11,20 @@ const updateAvatar = async (req, res) => {
   const uploadPath = path.join(avatarsDir, `${_id}`);
   const avatarPath = path.join(uploadPath, originalname);
 
+  const [extn, name] = originalname.split('.').reverse();
+  const avatarURL = path.join('/avatars', `${name}-${_id}.${extn}`);
+
   try {
     const readFile = await Jimp.read(tempPath);
     await readFile.resize(250, 250).write(tempPath);
     await fs.mkdir(uploadPath);
     await fs.rename(tempPath, avatarPath);
-    const avatar = `/public/avatars/${_id}/${originalname}`;
-    await User.findByIdAndUpdate(_id, { avatar });
+    await User.findByIdAndUpdate(_id, { avatarURL }, { new: true });
     res.json({
       status: "success",
       code: 200,
       data: {
-        avatar,
+        avatarURL,
       },
     });
   } catch (error) {
