@@ -3,10 +3,10 @@ const { NotFound, BadRequest } = require("http-errors");
 
 const signIn = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, "_id email password verify");
 
-  if (!user) {
-    throw new NotFound(`User with email ${email} do not exist`);
+  if (!user || !user.verify) {
+    throw new NotFound(`User with email ${email} does not exist or not verified`);
   }
 
   if (!user.comparePassword(password)) {
