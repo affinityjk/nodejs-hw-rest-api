@@ -29,6 +29,10 @@ const userSchema = Schema(
       type: String,
       default: null,
     },
+    avatarURL: {
+      type: String,
+      default: "",
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -41,6 +45,8 @@ const joiUserSchema = Joi.object({
     .pattern(emailRegExp)
     .messages(validationMessage),
   subscription: Joi.string().valid("starter", "pro", "business"),
+  token: Joi.string(),
+  avatarURL: Joi.string(),
 });
 
 userSchema.methods.setPassword = function (password) {
