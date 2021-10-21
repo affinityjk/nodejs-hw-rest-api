@@ -8,7 +8,7 @@ const {
   upload,
 } = require("../../middlewares");
 
-const { joiUserSchema } = require("../../models/user");
+const { joiUserSchema, joiUserEmailSchema } = require("../../models/user");
 const ctrl = require("../../controllers/auth");
 
 router.post(
@@ -31,6 +31,13 @@ router.patch(
   authenticate,
   upload.single("avatar"),
   controllerWrapper(ctrl.updateAvatar)
+);
+
+router.get("/verify/:verifyToken", controllerWrapper(ctrl.verifyEmail));
+router.post(
+  "/verify",
+  validation(joiUserEmailSchema),
+  controllerWrapper(ctrl.reVerifyEmail)
 );
 
 module.exports = router;

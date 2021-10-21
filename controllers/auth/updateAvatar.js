@@ -11,8 +11,8 @@ const updateAvatar = async (req, res) => {
   const uploadPath = path.join(avatarsDir, `${_id}`);
   const avatarPath = path.join(uploadPath, originalname);
 
-  const [extn, name] = originalname.split('.').reverse();
-  const avatarURL = path.join('/avatars', `${name}-${_id}.${extn}`);
+  const [extn, name] = originalname.split(".").reverse();
+  const avatarURL = path.join("/avatars", `${name}-${_id}.${extn}`);
 
   try {
     const readFile = await Jimp.read(tempPath);

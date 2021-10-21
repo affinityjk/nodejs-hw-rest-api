@@ -1,5 +1,7 @@
 const { User } = require("../../models");
 const { Conflict } = require("http-errors");
+const { nanoid } = require("nanoid");
+const { sendEmail } = require("../../utils");
 const gravatar = require("gravatar");
 
 const signUp = async (req, res) => {
@@ -11,9 +13,20 @@ const signUp = async (req, res) => {
     throw new Conflict(`Email ${email} in use`);
   }
 
-  const newUser = new User({ email, avatarURL: defaultImage });
+  const verifyToken = nanoid();
+  const newUser = new User({ email, avatarURL: defaultImage, verifyToken });
   newUser.setPassword(password);
   await newUser.save();
+
+  const data = {
+    to: email,
+    subject: "Confirmation of registration",
+    html: `<p>Please, confirm your email <a href="http://localhost:3000/api/users/verify/${verifyToken}" target="_blank">${email}</a> to start using app</p>`,
+  };
+
+  const fromEmail = "yuliyaflm@gmail.com";
+
+  await sendEmail(data, fromEmail);
 
   res.json({
     status: "success",
